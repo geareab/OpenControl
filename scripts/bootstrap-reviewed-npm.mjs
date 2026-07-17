@@ -186,7 +186,7 @@ function npmCliCommand(cliPath) {
   }
   const resolved = fs.realpathSync(cliPath)
   const manifest = JSON.parse(
-    fs.readFileSync(path.resolve(path.dirname(resolved), '..', '..', 'package.json'), 'utf8'),
+    fs.readFileSync(path.resolve(path.dirname(resolved), '..', 'package.json'), 'utf8'),
   )
   if (manifest.name !== 'npm' || typeof manifest.version !== 'string') {
     throw new Error(`could not identify the npm CLI at ${cliPath}`)
