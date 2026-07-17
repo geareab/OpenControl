@@ -69,17 +69,11 @@ try {
     '--no-fund',
     '--engine-strict=false',
   ]
-  let installedNpmCommand = npmCommand
-  try {
-    runNpm(npmCommand, installArguments, stagingDirectory)
-  } catch (error) {
-    if (!isPermissionError(error)) throw error
-    const userPrefix = userNpmPrefix()
-    fs.mkdirSync(userPrefix, { recursive: true, mode: 0o700 })
-    runNpm(npmCommand, [...installArguments, '--prefix', userPrefix], stagingDirectory)
-    installedNpmCommand = npmCommandForPrefix(userPrefix)
-    exposeUserNpmPath(userPrefix)
-  }
+  const userPrefix = userNpmPrefix()
+  fs.mkdirSync(userPrefix, { recursive: true, mode: 0o700 })
+  runNpm(npmCommand, [...installArguments, '--prefix', userPrefix], stagingDirectory)
+  const installedNpmCommand = npmCommandForPrefix(userPrefix)
+  exposeUserNpmPath(userPrefix)
   const installedVersion = runNpm(
     installedNpmCommand,
     ['--version'],
@@ -131,12 +125,6 @@ function isSupportedNode(version) {
   return (
     (major === 22 && (minor > 23 || (minor === 23 && patch >= 1))) ||
     (major === 24 && (minor > 18 || (minor === 18 && patch >= 0)))
-  )
-}
-
-function isPermissionError(error) {
-  return /\bEACCES\b|permission denied/i.test(
-    error instanceof Error ? error.message : String(error),
   )
 }
 
