@@ -1,0 +1,56 @@
+name: Controller report
+description: Share an `opencontrol doctor --gamepad` report so your controller gets tested and listed.
+title: '[controller] <model>'
+labels: ['controller-report']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing a controller! The fastest path is a PR that drops your
+        `opencontrol doctor --gamepad` report file into `test/fixtures/controllers/` — but if
+        you'd rather not, fill this in and a maintainer will add it for you.
+
+        Run `opencontrol doctor --gamepad`, follow the checklist, then paste the generated JSON below.
+        Do not use this form for a security vulnerability; report those privately
+        from the repository Security tab as described in SECURITY.md.
+  - type: input
+    id: model
+    attributes:
+      label: Controller model
+      description: e.g. "Sony DualSense", "8BitDo Ultimate", "Xbox Series X wired"
+      placeholder: Sony DualSense
+    validations:
+      required: true
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection type
+      options:
+        - USB
+        - Bluetooth
+        - Other / not sure
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What worked / what didn't
+      description: Which buttons, sticks, or output (lightbar/LEDs) behaved unexpectedly?
+      placeholder: All face buttons worked. Touchpad click was not detected. Lightbar never turned red.
+    validations:
+      required: false
+  - type: textarea
+    id: report
+    attributes:
+      label: Paste your report
+      description: The full contents of the `*.json` file `opencontrol doctor --gamepad` wrote.
+      render: json
+    validations:
+      required: true
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: Fixture consent
+      options:
+        - label: I'm happy for these captures to be committed as test fixtures.
+          required: true

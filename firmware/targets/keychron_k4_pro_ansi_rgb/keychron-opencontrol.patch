@@ -1,0 +1,46 @@
+diff --git a/keyboards/keychron/bluetooth/indicator.c b/keyboards/keychron/bluetooth/indicator.c
+index 9bf74927e..0df6a26a5 100644
+--- a/keyboards/keychron/bluetooth/indicator.c
++++ b/keyboards/keychron/bluetooth/indicator.c
+@@ -14,6 +14,7 @@
+  */
+ 
+ #include "quantum.h"
++#include "opencontrol.h"
+ #include "indicator.h"
+ #include "transport.h"
+ #include "battery.h"
+@@ -549,6 +550,10 @@ bool LED_INDICATORS_KB(void) {
+     } else
+         os_state_indicate();
+ 
++    if (get_transport() == TRANSPORT_USB) {
++        rgb_matrix_indicators_opencontrol();
++    }
++
+    return false;
+ }
+ 
+diff --git a/keyboards/keychron/k4_pro/k4_pro.c b/keyboards/keychron/k4_pro/k4_pro.c
+index 39bc17cfb..9f989806f 100644
+--- a/keyboards/keychron/k4_pro/k4_pro.c
++++ b/keyboards/keychron/k4_pro/k4_pro.c
+@@ -14,6 +14,7 @@
+  */
+ 
+ #include "k4_pro.h"
++#include "opencontrol.h"
+ #ifdef KC_BLUETOOTH_ENABLE
+ #    include "ckbt51.h"
+ #    include "bluetooth.h"
+@@ -267,6 +268,10 @@ void battery_calculte_voltage(uint16_t value) {
+ }
+ 
+ bool via_command_kb(uint8_t *data, uint8_t length) {
++    if (get_transport() == TRANSPORT_USB && opencontrol_via_command(data, length)) {
++        return true;
++    }
++
+     switch (data[0]) {
+ #ifdef KC_BLUETOOTH_ENABLE
+         case 0xAA:

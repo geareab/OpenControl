@@ -1,0 +1,14 @@
+# OpenControl currently has one repository owner. Add a security team here
+# before requiring independent review from multiple maintainers.
+* @geareab
+
+# Security policy, automation, release inputs, and license boundaries.
+/.github/ @geareab
+/package.json @geareab
+/package-lock.json @geareab
+/scripts/ @geareab
+/SECURITY.md @geareab
+/LICENSE @geareab
+/NOTICE @geareab
+/THIRD_PARTY_NOTICES.md @geareab
+/firmware/ @geareab

@@ -1,0 +1,3 @@
+# Local firmware preparation bundles contain GPL source and device-specific
+# binaries. They are never part of the MIT npm package.
+dist/firmware/

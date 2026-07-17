@@ -1,0 +1,8 @@
+{
+  "module_name": "OpenControl",
+  "maintainer": "OpenControl contributors",
+  "license": "GPL-2.0-or-later",
+  "features": {
+    "via": true
+  }
+}

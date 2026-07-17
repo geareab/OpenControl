@@ -1,0 +1,85 @@
+name: qmk
+
+on:
+  workflow_call:
+  pull_request:
+    paths:
+      - 'firmware/**'
+      - '.github/workflows/qmk.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'firmware/**'
+      - '.github/workflows/qmk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  portable-tests:
+    name: Portable firmware tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.23.1
+      - name: Validate protocol and portable C behavior
+        run: bash firmware/ci/run-portable-tests.sh
+
+  compile:
+    name: ${{ matrix.target.arch }} / ${{ matrix.target.keyboard }} / ${{ matrix.qmk.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: ${{ matrix.qmk.experimental }}
+    container: ghcr.io/qmk/qmk_cli@sha256:b7d7fa8fb4432b569931de5ad59098cb788f440ed61a62c5126746b71aee0f4a
+    strategy:
+      fail-fast: false
+      matrix:
+        qmk:
+          - name: supported-2026-05-31
+            ref: 62a8db33a3e4928a58031c1d73815c6e23d99d2b
+            experimental: false
+          - name: master-compatibility
+            ref: master
+            experimental: true
+        target:
+          - arch: AVR
+            keyboard: handwired/onekey/promicro
+          - arch: ARM
+            keyboard: handwired/onekey/proton_c
+    steps:
+      - name: Checkout OpenControl
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Checkout QMK firmware
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          repository: qmk/qmk_firmware
+          ref: ${{ matrix.qmk.ref }}
+          path: qmk_firmware
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Verify QMK CLI toolchain
+        run: qmk --version
+
+      - name: Prepare External Userspace
+        run: bash firmware/ci/prepare-userspace.sh "$GITHUB_WORKSPACE/.qmk-userspace-ci"
+
+      - name: Configure and validate External Userspace
+        run: |
+          qmk config user.qmk_home="$GITHUB_WORKSPACE/qmk_firmware"
+          qmk config user.overlay_dir="$GITHUB_WORKSPACE/.qmk-userspace-ci"
+          qmk userspace-doctor
+
+      - name: Compile module
+        run: qmk compile -kb "${{ matrix.target.keyboard }}" -km opencontrol

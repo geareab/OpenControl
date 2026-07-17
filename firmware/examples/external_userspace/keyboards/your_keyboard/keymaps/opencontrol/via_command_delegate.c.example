@@ -1,0 +1,18 @@
+// Copyright 2026 OpenControl contributors
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+#include QMK_KEYBOARD_H
+#include "opencontrol.h"
+
+/*
+ * Use this shape only with OPENCONTROL_VIA_COMMAND_MANUAL defined. OpenControl
+ * must see every packet first so it can consume namespace 0xE0 and notice VIA
+ * keymap changes. Replace existing_keyboard_via_command() with the previous
+ * body/handler; do not define two via_command_kb() functions.
+ */
+bool via_command_kb(uint8_t *data, uint8_t length) {
+    if (opencontrol_via_command(data, length)) {
+        return true;
+    }
+    return existing_keyboard_via_command(data, length);
+}

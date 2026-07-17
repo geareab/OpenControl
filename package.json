@@ -1,0 +1,94 @@
+{
+  "name": "opencontrol",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Open-source task and control bridge for Codex CLI, Claude Code, QMK/VIA keyboards, and gamepads.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geareab/OpenControl.git"
+  },
+  "homepage": "https://github.com/geareab/OpenControl#readme",
+  "bugs": {
+    "url": "https://github.com/geareab/OpenControl/issues"
+  },
+  "author": "OpenControl contributors",
+  "contributors": [
+    "Stephen Leo (OpenMicro original author)"
+  ],
+  "type": "module",
+  "bin": {
+    "opencontrol": "dist/cli.js",
+    "openmicro": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./harness": {
+      "types": "./dist/harness/index.d.ts",
+      "default": "./dist/harness/index.js"
+    },
+    "./input": {
+      "types": "./dist/input/index.d.ts",
+      "default": "./dist/input/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!dist/firmware",
+    "!dist/firmware/**",
+    "docs",
+    "LICENSE",
+    "NOTICE",
+    "SECURITY.md",
+    "THIRD_PARTY_NOTICES.md",
+    "CONTROLLERS.md"
+  ],
+  "engines": {
+    "node": ">=22.23.1 <23 || >=24.18.0 <25",
+    "npm": ">=11.16.0 <12"
+  },
+  "packageManager": "npm@11.16.0",
+  "allowScripts": {
+    "node-pty@1.1.0": true,
+    "node-hid@3.3.0": true,
+    "esbuild@0.28.1": true,
+    "fsevents@2.3.3": true
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsx src/cli.ts",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:firmware": "bash firmware/ci/run-portable-tests.sh",
+    "prepare:firmware:k4p-h3": "bash firmware/targets/keychron_k4_pro_ansi_rgb/prepare.sh",
+    "security:manifest": "node scripts/check-manifest-policy.mjs",
+    "security:licenses": "node scripts/check-licenses.mjs",
+    "security:package": "node scripts/check-package-contents.mjs",
+    "security:rebuild": "node scripts/rebuild-reviewed-dependencies.mjs",
+    "gen:controllers": "tsx scripts/gen-controller-table.ts && prettier --write CONTROLLERS.md",
+    "verify": "npm run typecheck && npm run lint && npm run format:check && npm run test",
+    "verify:release": "npm run verify && npm run test:firmware && npm run security:manifest && npm run security:licenses && npm run build && npm run security:package"
+  },
+  "dependencies": {
+    "dualsense-ts": "6.15.38",
+    "node-hid": "3.3.0",
+    "node-pty": "1.1.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.1",
+    "eslint": "9.39.5",
+    "prettier": "3.9.5",
+    "tsx": "4.23.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.64.0",
+    "vitest": "3.2.7"
+  }
+}

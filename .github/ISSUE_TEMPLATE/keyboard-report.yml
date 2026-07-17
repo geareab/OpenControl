@@ -1,0 +1,64 @@
+name: Keyboard compatibility report
+description: Share a sanitized OpenControl stock VIA or enhanced QMK diagnostic.
+title: '[keyboard] <model and revision>'
+labels: ['keyboard-report']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Run `opencontrol doctor` and attach or paste `opencontrol-doctor.json`.
+        The report omits terminal sequences, tokens, serial numbers, device paths,
+        working directories, prompts, environment variables, and other secrets. Do not attach a
+        firmware binary unless maintainers explicitly request one.
+
+        Do not use this form for a security vulnerability; report those privately
+        from the repository Security tab as described in SECURITY.md.
+  - type: input
+    id: model
+    attributes:
+      label: Keyboard model and hardware revision
+      placeholder: Keychron Q6 Pro ANSI knob, revision …
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: OpenControl mode
+      options:
+        - Stock VIA terminal mode
+        - Enhanced QMK Raw HID mode
+        - Both
+    validations:
+      required: true
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection used
+      options:
+        - USB
+        - Bluetooth
+        - 2.4 GHz
+        - Multiple
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Physical verification
+      description: Note controls, task routing, RGB states, VIA remapping, hotplug, and heartbeat behavior actually tested.
+    validations:
+      required: true
+  - type: textarea
+    id: report
+    attributes:
+      label: Sanitized doctor report
+      render: json
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Firmware safety
+      options:
+        - label: I built enhanced firmware for this exact hardware revision and know its recovery procedure, or I used stock mode only.
+          required: true

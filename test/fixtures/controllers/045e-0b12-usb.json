@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "openmicroVersion": "0.1.1",
+  "platform": "linux",
+  "osVersion": "example (derived from test/drivers.test.ts report buffers)",
+  "controller": {
+    "vid": "0x045e",
+    "pid": "0x0b12",
+    "product": "Xbox Wireless Controller",
+    "transport": "usb",
+    "driver": "xbox"
+  },
+  "results": {
+    "south": {
+      "status": "pass",
+      "capture": {
+        "pressed": "00000100000000000000000000000000",
+        "idle": "00000000000000000000000000000000"
+      }
+    },
+    "dpad_up": {
+      "status": "pass",
+      "capture": {
+        "pressed": "00000001000000000000000000000000",
+        "idle": "00000000000000000000000000000000"
+      }
+    },
+    "r2": {
+      "status": "pass",
+      "capture": {
+        "pressed": "000000000000ff030000000000000000",
+        "idle": "00000000000000000000000000000000"
+      }
+    },
+    "menu": {
+      "status": "pass",
+      "capture": {
+        "pressed": "00040000000000000000000000000000",
+        "idle": "00000000000000000000000000000000"
+      }
+    }
+  },
+  "axes": {
+    "left_x": {
+      "min": -1,
+      "max": 1
+    },
+    "left_y": {
+      "min": -1,
+      "max": 1
+    },
+    "right_x": {
+      "min": -1,
+      "max": 1
+    },
+    "right_y": {
+      "min": -1,
+      "max": 1
+    },
+    "l2": {
+      "min": 0,
+      "max": 1
+    },
+    "r2": {
+      "min": 0,
+      "max": 1
+    }
+  },
+  "output": "unsupported",
+  "timestamp": "2026-07-16T00:00:00.000Z"
+}

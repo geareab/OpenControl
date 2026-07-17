@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "openmicroVersion": "0.1.2",
+  "platform": "darwin",
+  "osVersion": "Darwin Kernel Version 25.5.0: Tue Jun  9 22:28:17 PDT 2026; root:xnu-12377.121.10~1/RELEASE_ARM64_T8142",
+  "controller": {
+    "vid": "0x054c",
+    "pid": "0x0ce6",
+    "product": "DualSense Wireless Controller",
+    "transport": "usb",
+    "driver": "dualsense"
+  },
+  "results": {
+    "south": {
+      "status": "pass"
+    },
+    "east": {
+      "status": "pass"
+    },
+    "west": {
+      "status": "pass"
+    },
+    "north": {
+      "status": "pass"
+    },
+    "dpad_up": {
+      "status": "pass"
+    },
+    "dpad_down": {
+      "status": "pass"
+    },
+    "dpad_left": {
+      "status": "pass"
+    },
+    "dpad_right": {
+      "status": "pass"
+    },
+    "l1": {
+      "status": "pass"
+    },
+    "r1": {
+      "status": "pass"
+    },
+    "l2": {
+      "status": "pass"
+    },
+    "r2": {
+      "status": "pass"
+    },
+    "l3": {
+      "status": "pass"
+    },
+    "r3": {
+      "status": "pass"
+    },
+    "menu": {
+      "status": "pass"
+    },
+    "view": {
+      "status": "pass"
+    },
+    "touchpad": {
+      "status": "pass"
+    }
+  },
+  "axes": {
+    "left_x": {
+      "min": -1,
+      "max": 1
+    },
+    "left_y": {
+      "min": -1,
+      "max": 1
+    },
+    "right_x": {
+      "min": -1,
+      "max": 1
+    },
+    "right_y": {
+      "min": -1,
+      "max": 1
+    },
+    "l2": {
+      "min": 0,
+      "max": 0.996078431372549
+    },
+    "r2": {
+      "min": 0,
+      "max": 1
+    }
+  },
+  "output": {
+    "lightbarRed": "y",
+    "lightbarBlue": "y",
+    "playerLeds": "y"
+  },
+  "timestamp": "2026-07-16T06:12:56.156Z"
+}

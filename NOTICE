@@ -1,0 +1,15 @@
+OpenControl
+Copyright (c) OpenControl contributors
+
+This project is derived from OpenMicro by Stephen Leo:
+https://github.com/stephenleo/OpenMicro
+
+OpenMicro and the OpenControl host application are distributed under the MIT
+License in LICENSE. The optional QMK firmware module is distributed separately
+under GPL-2.0-or-later; see the license in its firmware directory.
+
+The host uses dualsense-ts 6.15.38, an LGPL-3.0 library installed as a separate
+runtime dependency authored by Nate Dube and contributors. OpenControl does
+not relicense or remove notices from that library. See
+THIRD_PARTY_NOTICES.md for the runtime dependency inventory and license
+details.
