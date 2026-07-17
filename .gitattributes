@@ -1,2 +1,4 @@
 # Unified-diff context lines intentionally contain their one-character prefix.
+* text=auto eol=lf
+
 *.patch whitespace=-blank-at-eol

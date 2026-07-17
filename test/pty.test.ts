@@ -14,7 +14,10 @@ afterEach(() => {
 })
 
 function makePrebuilds(entries: Record<string, string[]>): string {
-  tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'opencontrol-pty-'))
+  // macOS exposes /var as a symlink to /private/var. Build the fixture from
+  // the canonical temp path so the tests exercise package-local link checks
+  // instead of correctly failing on that operating-system alias.
+  tmp = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'opencontrol-pty-'))
   const packageDirectory = path.join(tmp, 'node-pty')
   const prebuildsDirectory = path.join(packageDirectory, 'prebuilds')
   fs.mkdirSync(prebuildsDirectory, { recursive: true, mode: 0o700 })

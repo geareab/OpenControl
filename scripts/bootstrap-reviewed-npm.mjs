@@ -16,7 +16,7 @@ if (!isSupportedNode(process.versions.node)) {
   )
 }
 
-const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm'
+const npmCommand = activeNpmCommand()
 const currentVersion = runNpm(npmCommand, ['--version'], process.cwd()).stdout.trim()
 if (isSupportedNpm(currentVersion)) {
   console.log(`Using reviewed npm policy implementation ${currentVersion}.`)
@@ -69,17 +69,11 @@ try {
     '--no-fund',
     '--engine-strict=false',
   ]
-  let installedNpmCommand = npmCommand
-  try {
-    runNpm(npmCommand, installArguments, stagingDirectory)
-  } catch (error) {
-    if (!isPermissionError(error)) throw error
-    const userPrefix = userNpmPrefix()
-    fs.mkdirSync(userPrefix, { recursive: true, mode: 0o700 })
-    runNpm(npmCommand, [...installArguments, '--prefix', userPrefix], stagingDirectory)
-    installedNpmCommand = npmCommandForPrefix(userPrefix)
-    exposeUserNpmPath(userPrefix)
-  }
+  const userPrefix = userNpmPrefix()
+  fs.mkdirSync(userPrefix, { recursive: true, mode: 0o700 })
+  runNpm(npmCommand, [...installArguments, '--prefix', userPrefix], stagingDirectory)
+  const installedNpmCommand = npmCommandForPrefix(userPrefix)
+  exposeUserNpmPath(userPrefix)
   const installedVersion = runNpm(
     installedNpmCommand,
     ['--version'],
@@ -96,7 +90,7 @@ try {
 }
 
 function runNpm(command, arguments_, cwd) {
-  const result = spawnSync(command, arguments_, {
+  const result = spawnSync(command.executable, [...command.prefix, ...arguments_], {
     cwd,
     encoding: 'utf8',
     env: {
@@ -134,12 +128,6 @@ function isSupportedNode(version) {
   )
 }
 
-function isPermissionError(error) {
-  return /\bEACCES\b|permission denied/i.test(
-    error instanceof Error ? error.message : String(error),
-  )
-}
-
 function userNpmPrefix() {
   if (process.env.OPENCONTROL_NPM_PREFIX) {
     return path.resolve(process.env.OPENCONTROL_NPM_PREFIX)
@@ -152,9 +140,46 @@ function userNpmPrefix() {
 }
 
 function npmCommandForPrefix(prefix) {
-  return process.platform === 'win32'
-    ? path.join(prefix, 'npm.cmd')
-    : path.join(prefix, 'bin', 'npm')
+  if (process.platform !== 'win32') {
+    return { executable: path.join(prefix, 'bin', 'npm'), prefix: [] }
+  }
+  return npmCliCommand(path.join(prefix, 'node_modules', 'npm', 'bin', 'npm-cli.js'))
+}
+
+function activeNpmCommand() {
+  if (process.platform !== 'win32') return { executable: 'npm', prefix: [] }
+
+  const candidates = [
+    path.join(path.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js'),
+  ]
+  if (process.env.npm_execpath) candidates.push(path.resolve(process.env.npm_execpath))
+
+  for (const candidate of candidates) {
+    try {
+      return npmCliCommand(candidate)
+    } catch {
+      // Try the next canonical npm CLI location.
+    }
+  }
+  throw new Error(
+    `Could not locate a safe npm CLI beside ${process.execPath}. ` +
+      'Reinstall a supported Node.js distribution and rerun this command.',
+  )
+}
+
+function npmCliCommand(cliPath) {
+  const stats = fs.lstatSync(cliPath)
+  if (!stats.isFile() || stats.isSymbolicLink()) {
+    throw new Error(`refusing unsafe npm CLI path ${cliPath}`)
+  }
+  const resolved = fs.realpathSync(cliPath)
+  const manifest = JSON.parse(
+    fs.readFileSync(path.resolve(path.dirname(resolved), '..', 'package.json'), 'utf8'),
+  )
+  if (manifest.name !== 'npm' || typeof manifest.version !== 'string') {
+    throw new Error(`could not identify the npm CLI at ${cliPath}`)
+  }
+  return { executable: process.execPath, prefix: [resolved] }
 }
 
 function exposeUserNpmPath(prefix) {
