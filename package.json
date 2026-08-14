@@ -78,7 +78,7 @@
   },
   "dependencies": {
     "dualsense-ts": "6.15.38",
-    "node-hid": "3.3.0",
+    "node-hid": "3.4.0",
     "node-pty": "1.1.0",
     "zod": "4.4.3"
   },
